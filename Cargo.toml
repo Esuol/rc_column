@@ -2,7 +2,13 @@
 name = "rc_column"
 version = "0.1.0"
 edition = "2021"
+description = "Library for formatting strings into a grid layout"
+exclude = ["/.rustfmt.toml"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "rc_column"
+
 [dependencies]
+unicode-width = "0.1.7"

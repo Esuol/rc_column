@@ -1,14 +1,13 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+use std::cmp::max;
+use std::fmt;
+use std::iter::repeat;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+extern crate unicode_width;
+use unicode_width::UnicodeWidthStr;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+#[derive(Debug, Clone, PartialEq, Eq, Copy)]
+pub enum Alignment {
+    Left,
+
+    Right,
 }

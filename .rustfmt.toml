@@ -1,0 +1,7 @@
+# 这段代码来自一个名为 .rustfmt.toml 的文件。这是一个 Rust 格式化配置文件，用于定义 Rust 代码的格式化规则。
+
+# 在这段代码中，disable_all_formatting = true 这行表示禁用所有的格式化规则。这意味着当你运行 rustfmt 命令时，它不会对你的 Rust 代码进行任何格式化。
+
+# 总的来说，这段代码的作用是暂时禁用 Rust 代码的自动格式化。这可能是因为当前项目的某些特殊需求，或者是因为还在调整最终的格式化规则。
+disable_all_formatting = true
+# For now...
