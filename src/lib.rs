@@ -82,3 +82,35 @@ impl Dimensions {
         }
     }
 }
+
+#[derive(PartialEq, Debug)]
+pub struct GridOptions {
+    filling: Filling,
+    direction: Direction,
+}
+
+#[derive(PartialEq, Debug)]
+pub struct Grid {
+    options: GridOptions,
+    cells: Vec<Cell>,
+    widest_cell_length: Width,
+    width_sum: Width,
+    cell_count: usize,
+}
+
+impl Grid {
+    pub fn new(options: GridOptions) -> Self {
+        let cells = Vec::new();
+        Self {
+            options,
+            cells,
+            widest_cell_length: 0,
+            width_sum: 0,
+            cell_count: 0,
+        }
+    }
+
+    pub fn reserve(&mut self, additional: usize) {
+        self.cells.reserve(additional);
+    }
+}
