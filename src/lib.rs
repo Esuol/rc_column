@@ -27,3 +27,58 @@ impl From<String> for Cell {
         }
     }
 }
+
+impl<'a> From<&'a str> for Cell {
+    fn from(string: &'a str) -> Self {
+        Self {
+            width: UnicodeWidthStr::width(&*string),
+            contents: string.into(),
+            alignment: Alignment::Left,
+        }
+    }
+}
+
+#[derive(PartialEq, Debug, Copy, Clone)]
+pub enum Direction {
+    LeftToRight,
+    TopToBottom,
+}
+
+pub type Width = usize;
+
+#[derive(PartialEq, Debug)]
+pub enum Filling {
+    Spaces(Width),
+    Text(String),
+}
+
+impl Filling {
+    fn width(&self) -> Width {
+        match *self {
+            Filling::Spaces(width) => width,
+            // ref text 是一个模式，它匹配 Text 分支，并将其内部的字符串引用绑定到变量 text。
+            Filling::Text(ref text) => UnicodeWidthStr::width(&text[..]),
+        }
+    }
+}
+
+#[derive(PartialEq, Debug)]
+struct Dimensions {
+    num_lines: Width,
+
+    widths: Vec<Width>
+}
+
+impl Dimensions {
+    fn total_width(&self, separator_width: Width) -> Width {
+        if self.widths.is_empty() {
+           0
+        }
+        else {
+            let values = self.widths.iter().sum::<Width>();
+            let separators = separator_width * (self.widths.len() - 1);
+
+            values + separators
+        }
+    }
+}
