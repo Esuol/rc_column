@@ -113,4 +113,13 @@ impl Grid {
     pub fn reserve(&mut self, additional: usize) {
         self.cells.reserve(additional);
     }
+
+    pub fn add(&mut self, cell: Cell) {
+        if cell.width > self.widest_cell_length {
+            self.widest_cell_length = cell.width;
+        }
+        self.width_sum += cell.width;
+        self.cell_count += 1;
+        self.cells.push(cell)
+    }
 }
