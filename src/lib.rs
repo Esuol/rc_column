@@ -123,12 +123,12 @@ impl Grid {
         self.cells.push(cell)
     }
 
-    pub fn fit_into_width(&self, maximum_width: Width) -> Width {
+    pub fn fit_into_width(&self, maximum_width: Width) -> Option<Display<'_>> {
         self.width_dimensions(maximum_width)
-        .map(|dims| Display {
-            grid:       self,
-            dimensions: dims,
-        })
+            .map(|dims| Display {
+                grid:       self,
+                dimensions: dims,
+            })
     }
 
     fn column_widths(&self, num_lines: usize, num_columns: usize) -> Dimensions {
@@ -142,6 +142,30 @@ impl Grid {
         }
 
         Dimensions { num_lines, widths }
+    }
+
+    fn theoretical_max_num_lines(&self, maximum_width: usize) -> usize {
+        // TODO: Make code readable / efficient.
+        let mut theoretical_min_num_cols = 0;
+        let mut col_total_width_so_far = 0;
+
+        let mut cells = self.cells.clone();
+        cells.sort_unstable_by(|a, b| b.width.cmp(&a.width)); // Sort in reverse order
+
+        for cell in &cells {
+            if cell.width + col_total_width_so_far <= maximum_width {
+                theoretical_min_num_cols += 1;
+                col_total_width_so_far += cell.width;
+            } else {
+                let mut theoretical_max_num_lines = self.cell_count / theoretical_min_num_cols;
+                if self.cell_count % theoretical_min_num_cols != 0 {
+                    theoretical_max_num_lines += 1;
+                }
+                return theoretical_max_num_lines;
+            }
+            col_total_width_so_far += self.options.filling.width()
+        }
+        1
     }
 
     fn width_dimensions(&self, maximum_width: Width) -> Option<Dimensions> {
@@ -161,18 +185,11 @@ impl Grid {
 
         let theoretical_max_num_lines = self.theoretical_max_num_lines(maximum_width);
         if theoretical_max_num_lines == 1 {
-            // This if—statement is neccesary for the function to work correctly
-            // for small inputs.
             return Some(Dimensions {
                 num_lines: 1,
-                // I clone self.cells twice. Once here, and once in
-                // self.theoretical_max_num_lines. Perhaps not the best for
-                // performance?
                 widths: self.cells.clone().into_iter().map(|cell| cell.width).collect()
             });
         }
-        // Instead of numbers of columns, try to find the fewest number of *lines*
-        // that the output will fit in.
         let mut smallest_dimensions_yet = None;
         for num_lines in (1 .. theoretical_max_num_lines).rev() {
 
@@ -182,13 +199,6 @@ impl Grid {
             if self.cell_count % num_lines != 0 {
                 num_columns += 1;
             }
-
-            // Early abort: if there are so many columns that the width of the
-            // *column separators* is bigger than the width of the screen, then
-            // don’t even try to tabulate it.
-            // This is actually a necessary check, because the width is stored as
-            // a usize, and making it go negative makes it huge instead, but it
-            // also serves as a speed-up.
             let total_separator_width = (num_columns - 1) * self.options.filling.width();
             if maximum_width < total_separator_width {
                 continue;
@@ -208,4 +218,9 @@ impl Grid {
         None
     }
 
+}
+
+pub struct Display<'grid> {
+    grid: &'grid Grid,
+    dimensions: Dimensions,
 }
