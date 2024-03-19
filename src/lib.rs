@@ -219,8 +219,22 @@ impl Grid {
     }
 
 }
-
+#[derive(PartialEq, Debug)]
 pub struct Display<'grid> {
     grid: &'grid Grid,
     dimensions: Dimensions,
+}
+
+impl Display<'_> {
+    pub fn width(&self) -> Width {
+        self.dimensions.total_width(self.grid.options.filling.width())
+    }
+
+    pub fn row_count(&self) -> usize {
+        self.dimensions.num_lines
+    }
+
+    pub fn is_complete(&self) -> bool {
+        self.dimensions.widths.iter().all(|&x| x > 0)
+    }
 }
