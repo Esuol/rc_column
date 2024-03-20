@@ -238,3 +238,77 @@ impl Display<'_> {
         self.dimensions.widths.iter().all(|&x| x > 0)
     }
 }
+
+
+impl fmt::Display for Display<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        for y in 0 .. self.dimensions.num_lines {
+            for x in 0 .. self.dimensions.widths.len() {
+                let num = match self.grid.options.direction {
+                    Direction::LeftToRight  => y * self.dimensions.widths.len() + x,
+                    Direction::TopToBottom  => y + self.dimensions.num_lines * x,
+                };
+
+                // Abandon a line mid-way through if that’s where the cells end
+                if num >= self.grid.cells.len() {
+                    continue;
+                }
+
+                let cell = &self.grid.cells[num];
+                if x == self.dimensions.widths.len() - 1 {
+                    match cell.alignment {
+                        Alignment::Left => {
+                            // The final column doesn’t need to have trailing spaces,
+                            // as long as it’s left-aligned.
+                            write!(f, "{}", cell.contents)?;
+                        },
+                        Alignment::Right => {
+                            let extra_spaces: usize = self.dimensions.widths[x] - cell.width;
+                            write!(f, "{}", pad_string(&cell.contents, extra_spaces, Alignment::Right))?;
+                        }
+                    }
+                }
+                else {
+                    assert!(self.dimensions.widths[x] >= cell.width);
+                    match (&self.grid.options.filling, cell.alignment) {
+                        (Filling::Spaces(n), Alignment::Left) => {
+                            let extra_spaces = self.dimensions.widths[x] - cell.width + n;
+                            write!(f, "{}", pad_string(&cell.contents, extra_spaces, cell.alignment))?;
+                        },
+                        (Filling::Spaces(n), Alignment::Right) => {
+                            let s = spaces(*n);
+                            let extra_spaces = self.dimensions.widths[x] - cell.width;
+                            write!(f, "{}{}", pad_string(&cell.contents, extra_spaces, cell.alignment), s)?;
+                        },
+                        (Filling::Text(ref t), _) => {
+                            let extra_spaces = self.dimensions.widths[x] - cell.width;
+                            write!(f, "{}{}", pad_string(&cell.contents, extra_spaces, cell.alignment), t)?;
+                        },
+                    }
+                }
+            }
+
+            writeln!(f)?;
+        }
+
+        Ok(())
+    }
+}
+
+/// Pad a string with the given number of spaces.
+fn spaces(length: usize) -> String {
+    repeat(" ").take(length).collect()
+}
+
+
+fn pad_string(string: &str, padding: usize, alignment: Alignment) -> String {
+    if alignment == Alignment::Left {
+        format!("{}{}", string, spaces(padding))
+    }
+    else {
+        format!("{}{}", spaces(padding), string)
+    }
+}
+
+
+
