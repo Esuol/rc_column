@@ -347,6 +347,23 @@ mod test {
         assert_eq!(display.width(), 1);
     }
 
+    #[test]
+    fn one_item_exact_width() {
+        let mut grid = Grid::new(GridOptions {
+            direction:  Direction::TopToBottom,
+            filling:    Filling::Spaces(2),
+        });
+
+        grid.add(Cell::from("1234567890"));
+
+        let display = grid.fit_into_width(10).unwrap();
+
+        assert_eq!(display.dimensions.num_lines, 1);
+        assert_eq!(display.dimensions.widths, vec![ 10 ]);
+
+        assert_eq!(display.width(), 10);
+    }
+
 }
 
 
