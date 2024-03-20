@@ -329,6 +329,24 @@ mod test {
         assert_eq!(display.width(), 0);
     }
 
+
+    #[test]
+    fn one_item() {
+        let mut grid = Grid::new(GridOptions {
+            direction:  Direction::TopToBottom,
+            filling:    Filling::Spaces(2),
+        });
+
+        grid.add(Cell::from("1"));
+
+        let display = grid.fit_into_width(40).unwrap();
+
+        assert_eq!(display.dimensions.num_lines, 1);
+        assert_eq!(display.dimensions.widths, vec![ 1 ]);
+
+        assert_eq!(display.width(), 1);
+    }
+
 }
 
 
