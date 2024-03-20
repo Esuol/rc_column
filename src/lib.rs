@@ -364,6 +364,18 @@ mod test {
         assert_eq!(display.width(), 10);
     }
 
+    #[test]
+    fn one_item_just_over() {
+        let mut grid = Grid::new(GridOptions {
+            direction:  Direction::TopToBottom,
+            filling:    Filling::Spaces(2),
+        });
+
+        grid.add(Cell::from("1234567890!"));
+
+        assert_eq!(grid.fit_into_width(10), None);
+    }
+
 }
 
 
