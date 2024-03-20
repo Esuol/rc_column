@@ -310,5 +310,26 @@ fn pad_string(string: &str, padding: usize, alignment: Alignment) -> String {
     }
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn no_items() {
+        let grid = Grid::new(GridOptions {
+            direction:  Direction::TopToBottom,
+            filling:    Filling::Spaces(2),
+        });
+
+        let display = grid.fit_into_width(40).unwrap();
+
+        assert_eq!(display.dimensions.num_lines, 0);
+        assert!(display.dimensions.widths.is_empty());
+
+        assert_eq!(display.width(), 0);
+    }
+
+}
+
 
 
