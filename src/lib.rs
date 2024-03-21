@@ -464,6 +464,28 @@ mod test {
     }
 
 
+    #[test]
+    fn numbers_right() {
+        let mut grid = Grid::new(GridOptions {
+            filling:    Filling::Spaces(1),
+            direction:  Direction::LeftToRight,
+        });
+
+        for s in &["one", "two", "three", "four", "five", "six", "seven",
+                   "eight", "nine", "ten", "eleven", "twelve"]
+        {
+            let mut cell = Cell::from(*s);
+            cell.alignment = Alignment::Right;
+            grid.add(cell);
+        }
+
+        let bits = " one two  three   four\nfive six  seven  eight\nnine ten eleven twelve\n";
+        assert_eq!(grid.fit_into_width(24).unwrap().to_string(), bits);
+        assert_eq!(grid.fit_into_width(24).unwrap().row_count(), 3);
+    }
+
+
+
 }
 
 
