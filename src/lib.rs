@@ -445,6 +445,24 @@ mod test {
         assert_eq!(grid.fit_into_width(24).unwrap().row_count(), 3);
     }
 
+    #[test]
+    fn number_grid_with_pipe() {
+        let mut grid = Grid::new(GridOptions {
+            filling:    Filling::Text("|".into()),
+            direction:  Direction::LeftToRight,
+        });
+
+        for s in &["one", "two", "three", "four", "five", "six", "seven",
+                   "eight", "nine", "ten", "eleven", "twelve"]
+        {
+            grid.add(Cell::from(*s));
+        }
+
+        let bits = "one |two|three |four\nfive|six|seven |eight\nnine|ten|eleven|twelve\n";
+        assert_eq!(grid.fit_into_width(24).unwrap().to_string(), bits);
+        assert_eq!(grid.fit_into_width(24).unwrap().row_count(), 3);
+    }
+
 
 }
 
