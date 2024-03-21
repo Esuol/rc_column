@@ -427,6 +427,24 @@ mod test {
     }
 
 
+    #[test]
+    fn that_example_from_earlier() {
+        let mut grid = Grid::new(GridOptions {
+            filling:    Filling::Spaces(1),
+            direction:  Direction::LeftToRight,
+        });
+
+        for s in &["one", "two", "three", "four", "five", "six", "seven",
+                   "eight", "nine", "ten", "eleven", "twelve"]
+        {
+            grid.add(Cell::from(*s));
+        }
+
+        let bits = "one  two three  four\nfive six seven  eight\nnine ten eleven twelve\n";
+        assert_eq!(grid.fit_into_width(24).unwrap().to_string(), bits);
+        assert_eq!(grid.fit_into_width(24).unwrap().row_count(), 3);
+    }
+
 
 }
 
