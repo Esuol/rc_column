@@ -394,6 +394,25 @@ mod test {
         assert_eq!(display.width(), 1 + 2 + 1);
     }
 
+    #[test]
+    fn two_medium_size_items() {
+        let mut grid = Grid::new(GridOptions {
+            direction:  Direction::TopToBottom,
+            filling:    Filling::Spaces(2),
+        });
+
+        grid.add(Cell::from("hello there"));
+        grid.add(Cell::from("how are you today?"));
+
+        let display = grid.fit_into_width(40).unwrap();
+
+        assert_eq!(display.dimensions.num_lines, 1);
+        assert_eq!(display.dimensions.widths, vec![ 11, 18 ]);
+
+        assert_eq!(display.width(), 11 + 2 + 18);
+    }
+
+
 
 }
 
