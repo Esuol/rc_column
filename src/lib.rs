@@ -413,6 +413,20 @@ mod test {
     }
 
 
+    #[test]
+    fn two_big_items() {
+        let mut grid = Grid::new(GridOptions {
+            direction:  Direction::TopToBottom,
+            filling:    Filling::Spaces(2),
+        });
+
+        grid.add(Cell::from("nuihuneihsoenhisenouiuteinhdauisdonhuisudoiosadiuohnteihaosdinhteuieudi"));
+        grid.add(Cell::from("oudisnuthasuouneohbueobaugceoduhbsauglcobeuhnaeouosbubaoecgueoubeohubeo"));
+
+        assert_eq!(grid.fit_into_width(40), None);
+    }
+
+
 
 }
 
