@@ -497,8 +497,22 @@ mod test {
         assert_eq!(grid.fit_into_width(99), None);
     }
 
+    #[test]
+    fn huge_yet_unused_separator() {
+        let mut grid = Grid::new(GridOptions {
+            filling:    Filling::Spaces(100),
+            direction:  Direction::LeftToRight,
+        });
 
+        grid.add("abcd".into());
 
+        let display = grid.fit_into_width(99).unwrap();
+
+        assert_eq!(display.dimensions.num_lines, 1);
+        assert_eq!(display.dimensions.widths, vec![ 4 ]);
+
+        assert_eq!(display.width(), 4);
+    }
 }
 
 
