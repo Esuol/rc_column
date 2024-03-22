@@ -484,6 +484,19 @@ mod test {
         assert_eq!(grid.fit_into_width(24).unwrap().row_count(), 3);
     }
 
+    #[test]
+    fn huge_separator() {
+        let mut grid = Grid::new(GridOptions {
+            filling:    Filling::Spaces(100),
+            direction:  Direction::LeftToRight,
+        });
+
+        grid.add("a".into());
+        grid.add("b".into());
+
+        assert_eq!(grid.fit_into_width(99), None);
+    }
+
 
 
 }
